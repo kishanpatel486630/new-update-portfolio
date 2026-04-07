@@ -1,16 +1,21 @@
-import { useState } from 'react';
-import { motion } from 'framer-motion';
-import { HiMail, HiLocationMarker, HiPhone } from 'react-icons/hi';
-import { FiSend } from 'react-icons/fi';
-import { personalInfo } from '../data/portfolio';
-import SectionHeading from './ui/SectionHeading';
-import Card from './ui/Card';
-import GlowOrb from './ui/GlowOrb';
-import FadeInOnScroll from './motion/FadeInOnScroll';
+import { useState } from "react";
+import { motion } from "framer-motion";
+import { HiMail, HiLocationMarker, HiPhone } from "react-icons/hi";
+import { FiSend } from "react-icons/fi";
+import { personalInfo } from "../data/portfolio";
+import SectionHeading from "./ui/SectionHeading";
+import Card from "./ui/Card";
+import GlowOrb from "./ui/GlowOrb";
+import FadeInOnScroll from "./motion/FadeInOnScroll";
 
 export default function Contact() {
-  const [formData, setFormData] = useState({ name: '', email: '', message: '' });
-  const [status, setStatus] = useState('idle'); // idle | sending | success | error
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    message: "",
+  });
+  const [status, setStatus] = useState("idle"); // idle | sending | success | error
+  const [statusMessage, setStatusMessage] = useState("");
 
   const handleChange = (e) => {
     setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
@@ -18,26 +23,35 @@ export default function Contact() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setStatus('sending');
+    setStatus("sending");
 
     try {
-      const res = await fetch('/api/contact', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
       });
 
+      const payload = await res.json().catch(() => ({}));
+
       if (res.ok) {
-        setStatus('success');
-        setFormData({ name: '', email: '', message: '' });
-        setTimeout(() => setStatus('idle'), 4000);
+        setStatus("success");
+        setStatusMessage(payload.message || "Message sent successfully.");
+        setFormData({ name: "", email: "", message: "" });
+        setTimeout(() => setStatus("idle"), 4000);
       } else {
-        setStatus('error');
-        setTimeout(() => setStatus('idle'), 4000);
+        setStatus("error");
+        setStatusMessage(
+          payload.error || "Failed to send message. Please try again.",
+        );
+        setTimeout(() => setStatus("idle"), 4000);
       }
     } catch {
-      setStatus('error');
-      setTimeout(() => setStatus('idle'), 4000);
+      setStatus("error");
+      setStatusMessage(
+        "Network error. Please check your connection and try again.",
+      );
+      setTimeout(() => setStatus("idle"), 4000);
     }
   };
 
@@ -49,7 +63,12 @@ export default function Contact() {
   return (
     <section id="contact" className="relative py-24 md:py-32 overflow-hidden">
       <GlowOrb color="blue" size={400} className="bottom-0 left-[-5%]" />
-      <GlowOrb color="purple" size={300} className="top-[10%] right-[-5%]" delay={3} />
+      <GlowOrb
+        color="purple"
+        size={300}
+        className="top-[10%] right-[-5%]"
+        delay={3}
+      />
 
       <div className="max-w-7xl mx-auto px-6">
         <SectionHeading
@@ -62,32 +81,58 @@ export default function Contact() {
           <FadeInOnScroll className="lg:col-span-2" direction="left">
             <div className="space-y-6">
               <div>
-                <h3 className="text-xl font-bold mb-2">Let's talk about your project</h3>
+                <h3 className="text-xl font-bold mb-2">
+                  Let's talk about your project
+                </h3>
                 <p className="text-text-secondary text-sm leading-relaxed">
-                  I'm always excited to work on new challenges. Whether it's a full product design,
-                  a quick consultation, or a design system — let's connect.
+                  I'm always excited to work on new challenges. Whether it's a
+                  full product design, a quick consultation, or a design system
+                  — let's connect.
                 </p>
               </div>
 
               {/* Contact details */}
               <div className="space-y-4">
                 {[
-                  { icon: HiMail, label: 'Email', value: personalInfo.email, href: `mailto:${personalInfo.email}` },
-                  { icon: HiLocationMarker, label: 'Location', value: personalInfo.location },
-                  { icon: HiPhone, label: 'Availability', value: 'Open to freelance & full-time' },
+                  {
+                    icon: HiMail,
+                    label: "Email",
+                    value: personalInfo.email,
+                    href: `mailto:${personalInfo.email}`,
+                  },
+                  {
+                    icon: HiLocationMarker,
+                    label: "Location",
+                    value: personalInfo.location,
+                  },
+                  {
+                    icon: HiPhone,
+                    label: "Availability",
+                    value: "Open to freelance & full-time",
+                  },
                 ].map(({ icon: Icon, label, value, href }) => (
-                  <div key={label} className="flex items-start gap-4 p-4 rounded-xl glass group hover:border-border-hover transition-all duration-300">
+                  <div
+                    key={label}
+                    className="flex items-start gap-4 p-4 rounded-xl glass group hover:border-border-hover transition-all duration-300"
+                  >
                     <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-gradient-start/20 to-gradient-end/20 flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-300">
                       <Icon className="text-gradient-end" size={18} />
                     </div>
                     <div>
-                      <p className="text-xs text-text-muted uppercase tracking-wider mb-0.5">{label}</p>
+                      <p className="text-xs text-text-muted uppercase tracking-wider mb-0.5">
+                        {label}
+                      </p>
                       {href ? (
-                        <a href={href} className="text-sm font-medium text-white hover:text-gradient-end transition-colors">
+                        <a
+                          href={href}
+                          className="text-sm font-medium text-white hover:text-gradient-end transition-colors"
+                        >
                           {value}
                         </a>
                       ) : (
-                        <p className="text-sm font-medium text-white">{value}</p>
+                        <p className="text-sm font-medium text-white">
+                          {value}
+                        </p>
                       )}
                     </div>
                   </div>
@@ -97,12 +142,19 @@ export default function Contact() {
           </FadeInOnScroll>
 
           {/* Form */}
-          <FadeInOnScroll className="lg:col-span-3" direction="right" delay={0.2}>
+          <FadeInOnScroll
+            className="lg:col-span-3"
+            direction="right"
+            delay={0.2}
+          >
             <Card className="p-6 md:p-8" hover={false}>
               <form onSubmit={handleSubmit} className="space-y-5">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                   <div>
-                    <label htmlFor="contact-name" className="block text-xs text-text-muted uppercase tracking-wider mb-2 font-medium">
+                    <label
+                      htmlFor="contact-name"
+                      className="block text-xs text-text-muted uppercase tracking-wider mb-2 font-medium"
+                    >
                       Your Name
                     </label>
                     <input
@@ -117,7 +169,10 @@ export default function Contact() {
                     />
                   </div>
                   <div>
-                    <label htmlFor="contact-email" className="block text-xs text-text-muted uppercase tracking-wider mb-2 font-medium">
+                    <label
+                      htmlFor="contact-email"
+                      className="block text-xs text-text-muted uppercase tracking-wider mb-2 font-medium"
+                    >
                       Email Address
                     </label>
                     <input
@@ -134,7 +189,10 @@ export default function Contact() {
                 </div>
 
                 <div>
-                  <label htmlFor="contact-message" className="block text-xs text-text-muted uppercase tracking-wider mb-2 font-medium">
+                  <label
+                    htmlFor="contact-message"
+                    className="block text-xs text-text-muted uppercase tracking-wider mb-2 font-medium"
+                  >
                     Your Message
                   </label>
                   <textarea
@@ -152,26 +210,30 @@ export default function Contact() {
                 {/* Submit */}
                 <motion.button
                   type="submit"
-                  disabled={status === 'sending'}
+                  disabled={status === "sending"}
                   className="w-full py-4 rounded-xl bg-gradient-to-r from-gradient-start to-gradient-end
                     text-white font-semibold flex items-center justify-center gap-2
                     hover:shadow-[0_0_30px_rgba(37,99,235,0.4)] transition-all duration-300
                     disabled:opacity-60 disabled:cursor-not-allowed btn-shine"
                   whileTap={{ scale: 0.98 }}
                 >
-                  {status === 'sending' ? (
+                  {status === "sending" ? (
                     <>
                       <motion.div
                         className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full"
                         animate={{ rotate: 360 }}
-                        transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
+                        transition={{
+                          duration: 1,
+                          repeat: Infinity,
+                          ease: "linear",
+                        }}
                       />
                       Sending...
                     </>
-                  ) : status === 'success' ? (
-                    '✓ Message Sent!'
-                  ) : status === 'error' ? (
-                    'Failed — Try Again'
+                  ) : status === "success" ? (
+                    "✓ Message Sent!"
+                  ) : status === "error" ? (
+                    "Failed — Try Again"
                   ) : (
                     <>
                       Send Message
@@ -180,13 +242,25 @@ export default function Contact() {
                   )}
                 </motion.button>
 
-                {status === 'success' && (
+                {status === "success" && (
                   <motion.p
                     className="text-center text-sm text-success"
                     initial={{ opacity: 0, y: 5 }}
                     animate={{ opacity: 1, y: 0 }}
                   >
-                    Thank you! I'll get back to you within 24 hours.
+                    {statusMessage ||
+                      "Thank you! I'll get back to you within 24 hours."}
+                  </motion.p>
+                )}
+
+                {status === "error" && (
+                  <motion.p
+                    className="text-center text-sm text-error"
+                    initial={{ opacity: 0, y: 5 }}
+                    animate={{ opacity: 1, y: 0 }}
+                  >
+                    {statusMessage ||
+                      "Failed to send message. Please try again."}
                   </motion.p>
                 )}
               </form>

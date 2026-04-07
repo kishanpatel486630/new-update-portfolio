@@ -1,16 +1,23 @@
-import { motion } from 'framer-motion';
-import { HiArrowDown } from 'react-icons/hi';
-import { FiDribbble, FiLinkedin, FiGithub } from 'react-icons/fi';
-import { SiBehance } from 'react-icons/si';
-import { personalInfo, stats } from '../data/portfolio';
-import Button from './ui/Button';
-import GlowOrb from './ui/GlowOrb';
+import { motion } from "framer-motion";
+import { HiArrowDown } from "react-icons/hi";
+import { FiLinkedin, FiGithub } from "react-icons/fi";
+import { SiBehance } from "react-icons/si";
+import { personalInfo, stats } from "../data/portfolio";
+import Button from "./ui/Button";
+import GlowOrb from "./ui/GlowOrb";
 
 export default function Hero() {
   return (
-    <section id="hero" className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20">
+    <section
+      id="hero"
+      className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20"
+    >
       {/* Background Orbs */}
-      <GlowOrb color="blue" size={1200} className="top-[-10%] left-1/2 -translate-x-1/2 opacity-[0.15]" />
+      <GlowOrb
+        color="blue"
+        size={1200}
+        className="top-[-10%] left-1/2 -translate-x-1/2 opacity-[0.15]"
+      />
 
       {/* Grid pattern overlay */}
       <div
@@ -18,7 +25,7 @@ export default function Hero() {
         style={{
           backgroundImage: `linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px),
                             linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px)`,
-          backgroundSize: '60px 60px',
+          backgroundSize: "60px 60px",
         }}
       />
 
@@ -32,7 +39,9 @@ export default function Hero() {
             transition={{ duration: 0.6, delay: 0.2 }}
           >
             <span className="w-2 h-2 rounded-full bg-success animate-pulse" />
-            <span className="text-sm text-text-secondary font-medium">Available for new projects</span>
+            <span className="text-sm text-text-secondary font-medium">
+              Available for new projects
+            </span>
           </motion.div>
 
           {/* Name & Role */}
@@ -43,8 +52,10 @@ export default function Hero() {
             transition={{ duration: 0.7, delay: 0.3 }}
           >
             <h1 className="text-5xl sm:text-6xl md:text-7xl font-bold leading-[1.05] tracking-tight mb-4">
-              Hi, I'm{' '}
-              <span className="gradient-text">{personalInfo.name.split(' ')[0]}</span>
+              Hi, I'm{" "}
+              <span className="gradient-text">
+                {personalInfo.name.split(" ")[0]}
+              </span>
             </h1>
             <h2 className="text-xl sm:text-2xl md:text-3xl font-semibold text-text-secondary">
               {personalInfo.role}
@@ -59,8 +70,8 @@ export default function Hero() {
             transition={{ duration: 0.6, delay: 0.5 }}
           >
             {personalInfo.tagline}
-            <br className="hidden sm:block" />
-            I design products people love to use.
+            <br className="hidden sm:block" />I design products people love to
+            use.
           </motion.p>
 
           {/* CTAs */}
@@ -87,10 +98,21 @@ export default function Hero() {
             transition={{ duration: 0.6, delay: 0.9 }}
           >
             {[
-              { icon: FiDribbble, href: personalInfo.social.dribbble, label: 'Dribbble' },
-              { icon: SiBehance, href: personalInfo.social.behance, label: 'Behance' },
-              { icon: FiLinkedin, href: personalInfo.social.linkedin, label: 'LinkedIn' },
-              { icon: FiGithub, href: personalInfo.social.github, label: 'GitHub' },
+              {
+                icon: SiBehance,
+                href: personalInfo.social.behance,
+                label: "Behance",
+              },
+              {
+                icon: FiLinkedin,
+                href: personalInfo.social.linkedin,
+                label: "LinkedIn",
+              },
+              {
+                icon: FiGithub,
+                href: personalInfo.social.github,
+                label: "GitHub",
+              },
             ].map(({ icon: Icon, href, label }) => (
               <a
                 key={label}
@@ -116,7 +138,9 @@ export default function Hero() {
           >
             {stats.map((stat) => (
               <div key={stat.label} className="text-center">
-                <div className="text-3xl md:text-4xl font-bold gradient-text mb-1">{stat.value}</div>
+                <div className="text-3xl md:text-4xl font-bold gradient-text mb-1">
+                  {stat.value}
+                </div>
                 <div className="text-sm text-text-muted">{stat.label}</div>
               </div>
             ))}

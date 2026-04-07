@@ -1,16 +1,15 @@
-import { FiDribbble, FiLinkedin, FiGithub, FiTwitter, FiHeart } from 'react-icons/fi';
-import { SiBehance } from 'react-icons/si';
-import { personalInfo, navLinks } from '../data/portfolio';
+import { FiLinkedin, FiGithub, FiTwitter, FiHeart } from "react-icons/fi";
+import { SiBehance } from "react-icons/si";
+import { personalInfo, navLinks } from "../data/portfolio";
 
 export default function Footer() {
   const year = new Date().getFullYear();
 
   const socialLinks = [
-    { icon: FiDribbble, href: personalInfo.social.dribbble, label: 'Dribbble' },
-    { icon: SiBehance, href: personalInfo.social.behance, label: 'Behance' },
-    { icon: FiLinkedin, href: personalInfo.social.linkedin, label: 'LinkedIn' },
-    { icon: FiGithub, href: personalInfo.social.github, label: 'GitHub' },
-    { icon: FiTwitter, href: personalInfo.social.twitter, label: 'Twitter' },
+    { icon: SiBehance, href: personalInfo.social.behance, label: "Behance" },
+    { icon: FiLinkedin, href: personalInfo.social.linkedin, label: "LinkedIn" },
+    { icon: FiGithub, href: personalInfo.social.github, label: "GitHub" },
+    { icon: FiTwitter, href: personalInfo.social.twitter, label: "Twitter" },
   ];
 
   return (
@@ -23,7 +22,7 @@ export default function Footer() {
               K
             </div>
             <span className="font-bold">
-              {personalInfo.name.split(' ')[0]}
+              {personalInfo.name.split(" ")[0]}
               <span className="gradient-text">.</span>
             </span>
           </div>
@@ -62,7 +61,9 @@ export default function Footer() {
         {/* Bottom */}
         <div className="mt-8 pt-8 border-t border-border text-center">
           <p className="text-sm text-text-muted flex items-center justify-center gap-1">
-            © {year} {personalInfo.name}. Crafted with <FiHeart className="text-error" size={14} /> and attention to detail.
+            © {year} {personalInfo.name}. Crafted with{" "}
+            <FiHeart className="text-error" size={14} /> and attention to
+            detail.
           </p>
         </div>
       </div>

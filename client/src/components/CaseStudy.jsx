@@ -1,10 +1,40 @@
-import { motion, AnimatePresence } from 'framer-motion';
-import { HiX, HiArrowLeft } from 'react-icons/hi';
-import { caseStudy, projects } from '../data/portfolio';
-import GlowOrb from './ui/GlowOrb';
+import { useEffect, useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import {
+  HiX,
+  HiArrowLeft,
+  HiChevronLeft,
+  HiChevronRight,
+} from "react-icons/hi";
+import { caseStudies, projects } from "../data/portfolio";
+import GlowOrb from "./ui/GlowOrb";
 
 export default function CaseStudy({ activeProjectId, onClose }) {
-  const currentProject = projects.find(p => p.id === activeProjectId);
+  const currentProject = projects.find((p) => p.id === activeProjectId);
+  const activeCaseStudy = caseStudies[activeProjectId] || caseStudies.evmcare;
+  const [imageIndex, setImageIndex] = useState(0);
+  const images = currentProject?.images?.length
+    ? currentProject.images
+    : [currentProject?.image].filter(Boolean);
+
+  useEffect(() => {
+    setImageIndex(0);
+  }, [activeProjectId]);
+
+  useEffect(() => {
+    if (!images || images.length < 2) return undefined;
+
+    const timer = setInterval(() => {
+      setImageIndex((prev) => (prev + 1) % images.length);
+    }, 5000);
+
+    return () => clearInterval(timer);
+  }, [images]);
+
+  const changeImage = (direction) => {
+    if (!images || images.length < 2) return;
+    setImageIndex((prev) => (prev + direction + images.length) % images.length);
+  };
 
   return (
     <AnimatePresence>
@@ -30,14 +60,19 @@ export default function CaseStudy({ activeProjectId, onClose }) {
             <div className="min-h-screen">
               <motion.div
                 className="relative max-w-4xl mx-auto bg-bg-primary min-h-screen"
-                initial={{ x: '100%' }}
+                initial={{ x: "100%" }}
                 animate={{ x: 0 }}
-                exit={{ x: '100%' }}
+                exit={{ x: "100%" }}
                 transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
               >
                 {/* Background decoration */}
                 <GlowOrb color="blue" size={400} className="top-0 right-0" />
-                <GlowOrb color="purple" size={300} className="top-[50%] left-[-10%]" delay={3} />
+                <GlowOrb
+                  color="purple"
+                  size={300}
+                  className="top-[50%] left-[-10%]"
+                  delay={3}
+                />
 
                 {/* Close / Back button */}
                 <div className="sticky top-0 z-10 flex items-center justify-between p-6 glass-strong">
@@ -46,7 +81,9 @@ export default function CaseStudy({ activeProjectId, onClose }) {
                     className="flex items-center gap-2 text-text-secondary hover:text-white transition-colors"
                   >
                     <HiArrowLeft size={18} />
-                    <span className="text-sm font-medium">Back to Projects</span>
+                    <span className="text-sm font-medium">
+                      Back to Projects
+                    </span>
                   </button>
                   <button
                     onClick={onClose}
@@ -70,16 +107,39 @@ export default function CaseStudy({ activeProjectId, onClose }) {
                       Case Study • {currentProject.category}
                     </span>
                     <h1 className="text-4xl md:text-5xl font-bold mt-3 mb-6 tracking-tight">
-                      {currentProject.title}
+                      {activeCaseStudy.title}
                     </h1>
-                    
+                    <p className="text-base md:text-lg text-text-secondary mb-6 max-w-3xl">
+                      {activeCaseStudy.subtitle}
+                    </p>
+
                     {/* Dynamic Project Image */}
-                    <div className="w-full aspect-[21/9] sm:aspect-[21/9] rounded-2xl overflow-hidden glass p-2 mb-8">
-                      <img 
-                        src={currentProject.image} 
+                    <div className="relative w-full h-[320px] sm:h-[420px] md:h-[520px] rounded-2xl overflow-hidden glass p-2 mb-8 bg-bg-secondary">
+                      <img
+                        src={images[imageIndex]}
                         alt={currentProject.title}
-                        className="w-full h-full object-cover rounded-xl"
+                        className="w-full h-full object-contain rounded-xl"
                       />
+                      {images.length > 1 && (
+                        <>
+                          <button
+                            type="button"
+                            onClick={() => changeImage(-1)}
+                            className="absolute left-5 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full glass flex items-center justify-center text-white/90 hover:text-white"
+                            aria-label="Previous image"
+                          >
+                            <HiChevronLeft size={20} />
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => changeImage(1)}
+                            className="absolute right-5 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full glass flex items-center justify-center text-white/90 hover:text-white"
+                            aria-label="Next image"
+                          >
+                            <HiChevronRight size={20} />
+                          </button>
+                        </>
+                      )}
                     </div>
 
                     <p className="text-lg text-text-secondary leading-relaxed max-w-3xl">
@@ -95,14 +155,21 @@ export default function CaseStudy({ activeProjectId, onClose }) {
                     transition={{ delay: 0.4 }}
                   >
                     {[
-                      { label: 'Role', value: caseStudy.role },
-                      { label: 'Timeline', value: caseStudy.timeline },
-                      { label: 'Team', value: caseStudy.team },
-                      { label: 'Tools', value: caseStudy.tools.join(', ') },
+                      { label: "Role", value: activeCaseStudy.role },
+                      { label: "Timeline", value: activeCaseStudy.timeline },
+                      { label: "Team", value: activeCaseStudy.team },
+                      {
+                        label: "Tools",
+                        value: activeCaseStudy.tools.join(", "),
+                      },
                     ].map((item) => (
                       <div key={item.label} className="p-4 rounded-xl glass">
-                        <p className="text-xs text-text-muted uppercase tracking-wider mb-1">{item.label}</p>
-                        <p className="text-sm font-medium text-white">{item.value}</p>
+                        <p className="text-xs text-text-muted uppercase tracking-wider mb-1">
+                          {item.label}
+                        </p>
+                        <p className="text-sm font-medium text-white">
+                          {item.value}
+                        </p>
                       </div>
                     ))}
                   </motion.div>
@@ -116,12 +183,12 @@ export default function CaseStudy({ activeProjectId, onClose }) {
                   >
                     <h2 className="text-2xl font-bold mb-4">Overview</h2>
                     <p className="text-text-secondary leading-relaxed text-lg">
-                      {caseStudy.overview}
+                      {activeCaseStudy.overview}
                     </p>
                   </motion.div>
 
                   {/* Case Study Sections */}
-                  {caseStudy.sections.map((section, index) => (
+                  {activeCaseStudy.sections.map((section, index) => (
                     <motion.div
                       key={section.title}
                       className="mb-16"
@@ -131,26 +198,34 @@ export default function CaseStudy({ activeProjectId, onClose }) {
                     >
                       <div className="flex items-center gap-4 mb-6">
                         <span className="w-10 h-10 rounded-xl bg-gradient-to-br from-gradient-start to-gradient-end flex items-center justify-center text-sm font-bold flex-shrink-0">
-                          {String(index + 1).padStart(2, '0')}
+                          {String(index + 1).padStart(2, "0")}
                         </span>
                         <h2 className="text-2xl font-bold">{section.title}</h2>
                       </div>
 
                       {/* Render content with bullet points */}
                       <div className="pl-14">
-                        {section.content.split('\n').map((line, lineIndex) => {
+                        {section.content.split("\n").map((line, lineIndex) => {
                           const trimmed = line.trim();
-                          if (trimmed.startsWith('•')) {
+                          if (trimmed.startsWith("•")) {
                             return (
-                              <div key={lineIndex} className="flex items-start gap-3 mb-2">
+                              <div
+                                key={lineIndex}
+                                className="flex items-start gap-3 mb-2"
+                              >
                                 <span className="w-1.5 h-1.5 rounded-full bg-gradient-end mt-2.5 flex-shrink-0" />
-                                <p className="text-text-secondary leading-relaxed">{trimmed.slice(1).trim()}</p>
+                                <p className="text-text-secondary leading-relaxed">
+                                  {trimmed.slice(1).trim()}
+                                </p>
                               </div>
                             );
                           }
                           if (trimmed) {
                             return (
-                              <p key={lineIndex} className="text-text-secondary leading-relaxed mb-3">
+                              <p
+                                key={lineIndex}
+                                className="text-text-secondary leading-relaxed mb-3"
+                              >
                                 {trimmed}
                               </p>
                             );
@@ -160,17 +235,20 @@ export default function CaseStudy({ activeProjectId, onClose }) {
                       </div>
 
                       {/* Results section gets special treatment */}
-                      {section.title === 'Results' && (
+                      {section.title === "Results" && (
                         <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mt-8 pl-14">
                           {section.content
-                            .split('•')
+                            .split("•")
                             .filter(Boolean)
                             .slice(1)
                             .map((result, i) => {
-                              const parts = result.trim().split(':');
+                              const parts = result.trim().split(":");
                               if (parts.length < 2) return null;
                               return (
-                                <div key={i} className="p-4 rounded-xl glass text-center">
+                                <div
+                                  key={i}
+                                  className="p-4 rounded-xl glass text-center"
+                                >
                                   <p className="text-xs text-text-muted uppercase tracking-wider mb-2">
                                     {parts[0].trim()}
                                   </p>
@@ -192,7 +270,9 @@ export default function CaseStudy({ activeProjectId, onClose }) {
                     animate={{ opacity: 1 }}
                     transition={{ delay: 1.2 }}
                   >
-                    <p className="text-text-secondary mb-4">Interested in working together?</p>
+                    <p className="text-text-secondary mb-4">
+                      Interested in working together?
+                    </p>
                     <a
                       href="#contact"
                       onClick={onClose}

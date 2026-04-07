@@ -1,0 +1,17 @@
+{
+  "name": "new-update-portfolio",
+  "private": true,
+  "version": "1.0.0",
+  "scripts": {
+    "setup": "npm install --prefix server && npm install --prefix client && npm install",
+    "dev": "concurrently -n server,client -c cyan,magenta \"npm run dev --prefix server\" \"npm run dev --prefix client\"",
+    "dev:server": "npm run dev --prefix server",
+    "dev:client": "npm run dev --prefix client"
+  },
+  "dependencies": {
+    "nodemailer": "^6.10.1"
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.1"
+  }
+}
