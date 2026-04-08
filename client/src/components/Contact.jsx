@@ -8,10 +8,14 @@ import Card from "./ui/Card";
 import GlowOrb from "./ui/GlowOrb";
 import FadeInOnScroll from "./motion/FadeInOnScroll";
 
+const WEB3FORMS_ACCESS_KEY = import.meta.env.VITE_WEB3FORMS_ACCESS_KEY;
+
 export default function Contact() {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
+    phone: "",
+    interest: "",
     message: "",
   });
   const [status, setStatus] = useState("idle"); // idle | sending | success | error
@@ -26,23 +30,49 @@ export default function Contact() {
     setStatus("sending");
 
     try {
-      const res = await fetch("/api/contact", {
+      if (!WEB3FORMS_ACCESS_KEY) {
+        setStatus("error");
+        setStatusMessage(
+          "Web3Forms key is missing. Add VITE_WEB3FORMS_ACCESS_KEY in client/.env.",
+        );
+        setTimeout(() => setStatus("idle"), 4000);
+        return;
+      }
+
+      const payload = new FormData();
+      payload.append("access_key", WEB3FORMS_ACCESS_KEY);
+      payload.append("name", formData.name.trim());
+      payload.append("email", formData.email.trim());
+      payload.append("phone", formData.phone.trim());
+      payload.append("interest", formData.interest);
+      payload.append("message", formData.message.trim());
+      payload.append(
+        "subject",
+        `Portfolio contact from ${formData.name.trim()} (${formData.interest || "General"})`,
+      );
+
+      const res = await fetch("https://api.web3forms.com/submit", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
+        body: payload,
       });
 
-      const payload = await res.json().catch(() => ({}));
+      const responseData = await res.json().catch(() => ({}));
 
-      if (res.ok) {
+      if (res.ok && responseData.success) {
         setStatus("success");
-        setStatusMessage(payload.message || "Message sent successfully.");
-        setFormData({ name: "", email: "", message: "" });
+        setStatusMessage("Message sent successfully.");
+        setFormData({
+          name: "",
+          email: "",
+          phone: "",
+          interest: "",
+          message: "",
+        });
         setTimeout(() => setStatus("idle"), 4000);
       } else {
         setStatus("error");
         setStatusMessage(
-          payload.error || "Failed to send message. Please try again.",
+          responseData.message || "Failed to send message. Please try again.",
         );
         setTimeout(() => setStatus("idle"), 4000);
       }
@@ -185,6 +215,52 @@ export default function Contact() {
                       required
                       className={inputClasses}
                     />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                  <div>
+                    <label
+                      htmlFor="contact-phone"
+                      className="block text-xs text-text-muted uppercase tracking-wider mb-2 font-medium"
+                    >
+                      Phone Number
+                    </label>
+                    <input
+                      id="contact-phone"
+                      type="tel"
+                      name="phone"
+                      value={formData.phone}
+                      onChange={handleChange}
+                      placeholder="+91 98765 43210"
+                      className={inputClasses}
+                    />
+                  </div>
+                  <div>
+                    <label
+                      htmlFor="contact-interest"
+                      className="block text-xs text-text-muted uppercase tracking-wider mb-2 font-medium"
+                    >
+                      Interest
+                    </label>
+                    <select
+                      id="contact-interest"
+                      name="interest"
+                      value={formData.interest}
+                      onChange={handleChange}
+                      className={inputClasses}
+                    >
+                      <option value="">Select an option</option>
+                      <option value="UI/UX Design">UI/UX Design</option>
+                      <option value="Product Strategy">Product Strategy</option>
+                      <option value="Freelance Project">
+                        Freelance Project
+                      </option>
+                      <option value="Full-Time Opportunity">
+                        Full-Time Opportunity
+                      </option>
+                      <option value="General Inquiry">General Inquiry</option>
+                    </select>
                   </div>
                 </div>
 
