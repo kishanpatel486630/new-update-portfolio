@@ -90,6 +90,15 @@ export default function Contact() {
     focus:outline-none focus:border-gradient-start focus:shadow-[0_0_20px_rgba(37,99,235,0.1)]
     transition-all duration-300`;
 
+  const selectOptions = [
+    { value: "", label: "Select an option" },
+    { value: "UI/UX Design", label: "UI/UX Design" },
+    { value: "Product Strategy", label: "Product Strategy" },
+    { value: "Freelance Project", label: "Freelance Project" },
+    { value: "Full-Time Opportunity", label: "Full-Time Opportunity" },
+    { value: "General Inquiry", label: "General Inquiry" },
+  ];
+
   return (
     <section id="contact" className="relative py-24 md:py-32 overflow-hidden">
       <GlowOrb color="blue" size={400} className="bottom-0 left-[-5%]" />
@@ -249,17 +258,22 @@ export default function Contact() {
                       value={formData.interest}
                       onChange={handleChange}
                       className={inputClasses}
+                      style={{
+                        color: formData.interest ? "#f8fafc" : "#94a3b8",
+                      }}
                     >
-                      <option value="">Select an option</option>
-                      <option value="UI/UX Design">UI/UX Design</option>
-                      <option value="Product Strategy">Product Strategy</option>
-                      <option value="Freelance Project">
-                        Freelance Project
-                      </option>
-                      <option value="Full-Time Opportunity">
-                        Full-Time Opportunity
-                      </option>
-                      <option value="General Inquiry">General Inquiry</option>
+                      {selectOptions.map((option) => (
+                        <option
+                          key={option.value || "placeholder"}
+                          value={option.value}
+                          style={{
+                            backgroundColor: "#ffffff",
+                            color: "#0f172a",
+                          }}
+                        >
+                          {option.label}
+                        </option>
+                      ))}
                     </select>
                   </div>
                 </div>
