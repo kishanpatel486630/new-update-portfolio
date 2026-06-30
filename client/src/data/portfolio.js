@@ -11,7 +11,7 @@ export const personalInfo = {
   phone: "9328797998",
   profileImage: "/images/profile.jpg",
   social: {
-    dribbble: "https://dribbble.com/kishanparvadiya",
+    // dribbble: "https://dribbble.com/kishanparvadiya",
     behance: "https://behance.net/kishanparvadiya",
     linkedin: "https://linkedin.com/in/kishan-parvadiya-593120268",
     github: "https://github.com/kishanpatel486630",
@@ -102,8 +102,8 @@ export const projects = [
       "RK Credit First is a mobile-first financial platform that simplifies how users explore, apply for, and manage multiple credit cards in one unified ecosystem.",
     image: "/images/rk-credit-first.png",
     tags: ["Fintech", "Credit Cards", "Mobile App"],
-    year: "2024",
-    client: "RK Bank",
+    year: "2025",
+    client: "Internal",
     hasCaseStudy: true,
   },
 ];
@@ -455,10 +455,8 @@ export const skills = [
     category: "Tools & Software",
     items: [
       { name: "Figma", level: 96 },
-      { name: "FigJam & Miro", level: 90 },
-      { name: "Canva", level: 85 },
-      { name: "Adobe XD", level: 80 },
-      { name: "Sketch", level: 75 },
+      { name: "Figma motion", level: 96 },
+      { name: "Canva", level: 90 },
     ],
   },
   {
@@ -531,7 +529,7 @@ export const education = [
     period: "2022 — 2026",
     description:
       "Currently pursuing Bachelor's degree with a focus on product lifecycle and development.",
-    achievements: ["CGPA: 8.63 / 10"],
+    achievements: ["CGPA: 8.62 / 10"],
   },
   {
     degree: "Higher Secondary Science stream",
@@ -595,8 +593,8 @@ const calculateTotalExperience = () => {
 export const dynamicExperienceValue = calculateTotalExperience();
 
 export const stats = [
-  { value: "4+", label: "Projects Completed" },
+  { value: "10+", label: "Projects Completed" },
   { value: "2", label: "Certifications" },
-  { value: dynamicExperienceValue, label: "Years Experience" },
+  { value: 1.6, label: "Years Experience" },
   { value: "100%", label: "Commitment" },
 ];
