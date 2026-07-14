@@ -1,40 +1,19 @@
-import { useEffect, useState } from "react";
+import { useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import {
-  HiX,
-  HiArrowLeft,
-  HiChevronLeft,
-  HiChevronRight,
-} from "react-icons/hi";
+import { HiX, HiArrowLeft } from "react-icons/hi";
 import { caseStudies, projects } from "../data/portfolio";
 import GlowOrb from "./ui/GlowOrb";
 
 export default function CaseStudy({ activeProjectId, onClose }) {
   const currentProject = projects.find((p) => p.id === activeProjectId);
   const activeCaseStudy = caseStudies[activeProjectId] || caseStudies.evmcare;
-  const [imageIndex, setImageIndex] = useState(0);
-  const images = currentProject?.images?.length
-    ? currentProject.images
-    : [currentProject?.image].filter(Boolean);
-
-  useEffect(() => {
-    setImageIndex(0);
-  }, [activeProjectId]);
-
-  useEffect(() => {
-    if (!images || images.length < 2) return undefined;
-
-    const timer = setInterval(() => {
-      setImageIndex((prev) => (prev + 1) % images.length);
-    }, 5000);
-
-    return () => clearInterval(timer);
-  }, [images]);
-
-  const changeImage = (direction) => {
-    if (!images || images.length < 2) return;
-    setImageIndex((prev) => (prev + direction + images.length) % images.length);
-  };
+  const images = useMemo(
+    () =>
+      currentProject?.images?.length
+        ? currentProject.images
+        : [currentProject?.image].filter(Boolean),
+    [currentProject],
+  );
 
   return (
     <AnimatePresence>
@@ -113,33 +92,23 @@ export default function CaseStudy({ activeProjectId, onClose }) {
                       {activeCaseStudy.subtitle}
                     </p>
 
-                    {/* Dynamic Project Image */}
-                    <div className="relative w-full h-[320px] sm:h-[420px] md:h-[520px] rounded-2xl overflow-hidden glass p-2 mb-8 bg-bg-secondary">
-                      <img
-                        src={images[imageIndex]}
-                        alt={currentProject.title}
-                        className="w-full h-full object-contain rounded-xl"
-                      />
-                      {images.length > 1 && (
-                        <>
-                          <button
-                            type="button"
-                            onClick={() => changeImage(-1)}
-                            className="absolute left-5 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full glass flex items-center justify-center text-text-primary/90 hover:text-text-primary"
-                            aria-label="Previous image"
+                    {/* Horizontal Project Gallery */}
+                    <div className="mb-8 rounded-2xl overflow-hidden glass p-3 bg-bg-secondary">
+                      <div className="flex gap-4 overflow-x-auto pb-2 snap-x snap-mandatory">
+                        {images.map((image) => (
+                          <div
+                            key={image}
+                            className="shrink-0 w-[88%] sm:w-[75%] lg:w-[68%] h-[520px] sm:h-[640px] snap-start rounded-xl overflow-hidden bg-black/5"
                           >
-                            <HiChevronLeft size={20} />
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => changeImage(1)}
-                            className="absolute right-5 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full glass flex items-center justify-center text-text-primary/90 hover:text-text-primary"
-                            aria-label="Next image"
-                          >
-                            <HiChevronRight size={20} />
-                          </button>
-                        </>
-                      )}
+                            <img
+                              src={image}
+                              alt={currentProject.title}
+                              className="w-full h-full object-contain"
+                              loading="lazy"
+                            />
+                          </div>
+                        ))}
+                      </div>
                     </div>
 
                     <p className="text-lg text-text-secondary leading-relaxed max-w-3xl">
